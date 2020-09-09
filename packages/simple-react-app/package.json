@@ -5,7 +5,8 @@
 	"license": "MIT",
 	"private": true,
 	"scripts": {
-		"build": "sh support/build.sh"
+		"build": "sh support/build.sh",
+		"build:nocommit": "rollup -c"
 	},
 	"dependencies": {
 		"react": "16.13.1",
