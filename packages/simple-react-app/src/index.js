@@ -43,11 +43,11 @@ if (container) {
 			super();
 
 			this.container = document.createElement('div');
+
+			this.attachShadow({mode: 'open'}).appendChild(this.container);
 		}
 
 		connectedCallback() {
-			this.attachShadow({mode: 'open'}).appendChild(this.container);
-
 			const name = this.getAttribute('name');
 
 			ReactDOM.render(<App userName={name} />, this.container);
