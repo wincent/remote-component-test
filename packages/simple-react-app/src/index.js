@@ -3,12 +3,16 @@ import ReactDOM from 'react-dom';
 
 class App extends React.Component {
 	render() {
-		return <Greeter />;
+		return <Greeter initialName={this.props.userName} />;
 	}
 }
 
-function Greeter() {
-	const [name, setName] = useState('Jane Tester');
+App.defaultProps = {
+	userName: 'Jane Tester',
+};
+
+function Greeter({initialName}) {
+	const [name, setName] = useState(initialName);
 
 	return (
 		<div>
@@ -25,4 +29,34 @@ function Greeter() {
 	);
 }
 
-ReactDOM.render(<App />, document.getElementById('root'));
+const container = document.getElementById('simple-react-app-standalone-root');
+
+if (container) {
+	// We're probably being rendered at:
+	//
+	// http://remote-component-test.wincent.com/packages/simple-react-app/index.html
+	ReactDOM.render(<App />, container);
+} else {
+	// We're probably going to be rendered as a web component.
+	class SimpleReactApp extends HTMLElement {
+		constructor() {
+			super();
+
+			this.container = document.createElement('div');
+		}
+
+		connectedCallback() {
+			this.attachShadow({mode: 'open'}).appendChild(container);
+
+			const name = this.getAttribute('name');
+
+			ReactDOM.render(<App userName={name} />, container);
+		}
+
+		disconnectedCallback() {
+			ReactDOM.unmountComponentAtNode(container);
+		}
+	}
+
+	customElements.define('simple-react-app', SimpleReactApp);
+}
