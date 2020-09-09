@@ -1,0 +1,23 @@
+{
+	"name": "remote-component-test",
+	"version": "0.0.1",
+	"description": "",
+	"main": "index.js",
+	"scripts": {
+		"format": "npx prettier --write \"**/*.{css,html,js,json,md}\"",
+		"test": "npx prettier --check \"**/*.{css,html,js,json,md}\""
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/wincent/remote-component-test.git"
+	},
+	"author": "Greg Hurrell <greg.hurrell@liferay.com>",
+	"license": "MIT",
+	"homepage": "https://github.com/wincent/remote-component-test",
+	"private": true,
+	"workspaces": {
+		"packages": [
+			"packages/*"
+		]
+	}
+}
