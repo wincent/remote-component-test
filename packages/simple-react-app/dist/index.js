@@ -28332,9 +28332,18 @@ var reactDom = createCommonjsModule(function (module) {
 
 class App extends react.Component {
   render() {
-    return /*#__PURE__*/react.createElement("h1", null, "Hi");
+    return /*#__PURE__*/react.createElement(Greeter, null);
   }
 
+}
+
+function Greeter() {
+  const [name, setName] = react.useState('Jane Tester');
+  return /*#__PURE__*/react.createElement("div", null, /*#__PURE__*/react.createElement("label", null, /*#__PURE__*/react.createElement("span", null, "Name:"), /*#__PURE__*/react.createElement("input", {
+    onChange: event => setName(event.target.value),
+    type: "text",
+    value: name
+  })), /*#__PURE__*/react.createElement("p", null, "Hello, ", name, "!"));
 }
 
 reactDom.render( /*#__PURE__*/react.createElement(App, null), document.getElementById('root'));
