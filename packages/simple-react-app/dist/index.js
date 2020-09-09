@@ -28368,12 +28368,12 @@
 	    constructor() {
 	      super();
 	      this.container = document.createElement('div');
-	    }
-
-	    connectedCallback() {
 	      this.attachShadow({
 	        mode: 'open'
 	      }).appendChild(this.container);
+	    }
+
+	    connectedCallback() {
 	      const name = this.getAttribute('name');
 	      reactDom.render( /*#__PURE__*/react.createElement(App, {
 	        userName: name
