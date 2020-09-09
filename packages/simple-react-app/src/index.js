@@ -46,15 +46,15 @@ if (container) {
 		}
 
 		connectedCallback() {
-			this.attachShadow({mode: 'open'}).appendChild(container);
+			this.attachShadow({mode: 'open'}).appendChild(this.container);
 
 			const name = this.getAttribute('name');
 
-			ReactDOM.render(<App userName={name} />, container);
+			ReactDOM.render(<App userName={name} />, this.container);
 		}
 
 		disconnectedCallback() {
-			ReactDOM.unmountComponentAtNode(container);
+			ReactDOM.unmountComponentAtNode(this.container);
 		}
 	}
 
