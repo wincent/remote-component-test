@@ -28373,15 +28373,15 @@
 	    connectedCallback() {
 	      this.attachShadow({
 	        mode: 'open'
-	      }).appendChild(container);
+	      }).appendChild(this.container);
 	      const name = this.getAttribute('name');
 	      reactDom.render( /*#__PURE__*/react.createElement(App, {
 	        userName: name
-	      }), container);
+	      }), this.container);
 	    }
 
 	    disconnectedCallback() {
-	      reactDom.unmountComponentAtNode(container);
+	      reactDom.unmountComponentAtNode(this.container);
 	    }
 
 	  }
