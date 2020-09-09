@@ -28333,13 +28333,21 @@
 
 	class App extends react.Component {
 	  render() {
-	    return /*#__PURE__*/react.createElement(Greeter, null);
+	    return /*#__PURE__*/react.createElement(Greeter, {
+	      initialName: this.props.userName
+	    });
 	  }
 
 	}
 
-	function Greeter() {
-	  const [name, setName] = react.useState('Jane Tester');
+	App.defaultProps = {
+	  userName: 'Jane Tester'
+	};
+
+	function Greeter({
+	  initialName
+	}) {
+	  const [name, setName] = react.useState(initialName);
 	  return /*#__PURE__*/react.createElement("div", null, /*#__PURE__*/react.createElement("label", null, /*#__PURE__*/react.createElement("span", null, "Name:"), /*#__PURE__*/react.createElement("input", {
 	    onChange: event => setName(event.target.value),
 	    type: "text",
@@ -28347,6 +28355,38 @@
 	  })), /*#__PURE__*/react.createElement("p", null, "Hello, ", name, "!"));
 	}
 
-	reactDom.render( /*#__PURE__*/react.createElement(App, null), document.getElementById('root'));
+	const container = document.getElementById('simple-react-app-standalone-root');
+
+	if (container) {
+	  // We're probably being rendered at:
+	  //
+	  // http://remote-component-test.wincent.com/packages/simple-react-app/index.html
+	  reactDom.render( /*#__PURE__*/react.createElement(App, null), container);
+	} else {
+	  // We're probably going to be rendered as a web component.
+	  class SimpleReactApp extends HTMLElement {
+	    constructor() {
+	      super();
+	      this.container = document.createElement('div');
+	    }
+
+	    connectedCallback() {
+	      this.attachShadow({
+	        mode: 'open'
+	      }).appendChild(container);
+	      const name = this.getAttribute('name');
+	      reactDom.render( /*#__PURE__*/react.createElement(App, {
+	        userName: name
+	      }), container);
+	    }
+
+	    disconnectedCallback() {
+	      reactDom.unmountComponentAtNode(container);
+	    }
+
+	  }
+
+	  customElements.define('simple-react-app', SimpleReactApp);
+	}
 
 }());
