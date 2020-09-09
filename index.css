@@ -6,6 +6,18 @@ body {
 	min-height: 100vh;
 }
 
+footer {
+	background-color: peach-puff;
+	border-top: 1px solid #ccc;
+	padding: 16px;
+}
+
+header {
+	background-color: azure;
+	border-bottom: 1px solid #ccc;
+}
+
 #content {
 	flex: 1;
+	padding: 16px;
 }
