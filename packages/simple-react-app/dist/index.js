@@ -28386,7 +28386,11 @@
 
 	  }
 
-	  customElements.define('simple-react-app', SimpleReactApp);
+	  if (customElements.get('simple-react-app')) {
+	    console.log('Skipping registration for <simple-react-app> (already registered)');
+	  } else {
+	    customElements.define('simple-react-app', SimpleReactApp);
+	  }
 	}
 
 }());
