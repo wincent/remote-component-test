@@ -1,4 +1,4 @@
-(function() {
+(function () {
 	'use strict';
 
 	// Note this needs to be a real ES6 class (not transpiled).
