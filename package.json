@@ -4,6 +4,7 @@
 	"description": "",
 	"main": "index.js",
 	"scripts": {
+		"build": "yarn workspaces run build",
 		"format": "npx prettier --write \"**/*.{css,html,js,json,md}\"",
 		"test": "npx prettier --check \"**/*.{css,html,js,json,md}\""
 	},
