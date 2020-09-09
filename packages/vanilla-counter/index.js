@@ -66,5 +66,9 @@
 		}
 	}
 
-	customElements.define('vanilla-counter', VanillaCounter);
+	if (customElements.get('vanilla-counter')) {
+		console.log('Skipping registration for <vanilla-counter> (already registered)');
+	} else {
+		customElements.define('vanilla-counter', VanillaCounter);
+	}
 })();
