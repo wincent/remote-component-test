@@ -1,66 +1,70 @@
-// Note this needs to be a real ES6 class (not transpiled).
-//
-// See: https://github.com/w3c/webcomponents/issues/587
-class VanillaCounter extends HTMLElement {
-	constructor() {
-		super();
+(function() {
+	'use strict';
 
-		this.value = 0;
+	// Note this needs to be a real ES6 class (not transpiled).
+	//
+	// See: https://github.com/w3c/webcomponents/issues/587
+	class VanillaCounter extends HTMLElement {
+		constructor() {
+			super();
 
-		this.counter = document.createElement('span');
-		this.counter.innerText = this.value;
+			this.value = 0;
 
-		this.decrementButton = document.createElement('button');
-		this.decrementButton.innerText = '-';
+			this.counter = document.createElement('span');
+			this.counter.innerText = this.value;
 
-		this.incrementButton = document.createElement('button');
-		this.incrementButton.innerText = '+';
+			this.decrementButton = document.createElement('button');
+			this.decrementButton.innerText = '-';
 
-		const style = document.createElement('style');
+			this.incrementButton = document.createElement('button');
+			this.incrementButton.innerText = '+';
 
-		style.innerHTML = `
-			button {
-				height: 24px;
-				width: 24px;
-			}
+			const style = document.createElement('style');
 
-			span {
-				display: inline-block;
-				font-style: italic;
-				margin: 0 1em;
-			}
-		`;
+			style.innerHTML = `
+				button {
+					height: 24px;
+					width: 24px;
+				}
 
-		const root = document.createElement('div');
+				span {
+					display: inline-block;
+					font-style: italic;
+					margin: 0 1em;
+				}
+			`;
 
-		root.appendChild(style);
-		root.appendChild(this.decrementButton);
-		root.appendChild(this.incrementButton);
-		root.appendChild(this.counter);
+			const root = document.createElement('div');
 
-		this.attachShadow({mode: 'open'}).appendChild(root);
+			root.appendChild(style);
+			root.appendChild(this.decrementButton);
+			root.appendChild(this.incrementButton);
+			root.appendChild(this.counter);
 
-		this.decrement = this.decrement.bind(this);
-		this.increment = this.increment.bind(this);
+			this.attachShadow({mode: 'open'}).appendChild(root);
+
+			this.decrement = this.decrement.bind(this);
+			this.increment = this.increment.bind(this);
+		}
+
+		connectedCallback() {
+			this.decrementButton.addEventListener('click', this.decrement);
+			this.incrementButton.addEventListener('click', this.increment);
+		}
+
+		decrement() {
+			this.counter.innerText = --this.value;
+		}
+
+		disconnectedCallback() {
+			this.decrementButton.removeEventListener('click', this.decrement);
+			this.incrementButton.removeEventListener('click', this.increment);
+		}
+
+		increment() {
+			this.counter.innerText = ++this.value;
+		}
 	}
 
-	connectedCallback() {
-		this.decrementButton.addEventListener('click', this.decrement);
-		this.incrementButton.addEventListener('click', this.increment);
-	}
-
-	decrement() {
-		this.counter.innerText = --this.value;
-	}
-
-	disconnectedCallback() {
-		this.decrementButton.removeEventListener('click', this.decrement);
-		this.incrementButton.removeEventListener('click', this.increment);
-	}
-
-	increment() {
-		this.counter.innerText = ++this.value;
-	}
-}
-
-customElements.define('vanilla-counter', VanillaCounter);
+	customElements.define('vanilla-counter', VanillaCounter);
+})();
