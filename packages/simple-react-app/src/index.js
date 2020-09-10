@@ -54,7 +54,6 @@ class SimpleReactApp extends HTMLElement {
 	connectedCallback() {
 		const name = this.getAttribute('name');
 
-		// name is showing up as null, triggering a warning
 		ReactDOM.render(<App userName={name} />, this.container);
 	}
 
