@@ -2,8 +2,21 @@ import React, {useState} from 'react';
 import ReactDOM from 'react-dom';
 
 class App extends React.Component {
+	constructor(props) {
+		super(props);
+
+		// This illustrates a gotcha with web component attributes; if not
+		// provided, `getAttribute` returns `null`, which prevents React's
+		// defaultProps mechanism from working.
+		//
+		// If you care about it, you have to do a manual fallback.
+		this.state = {
+			userName: props.userName == null ? App.defaultProps.userName : props.userName,
+		};
+	}
+
 	render() {
-		return <Greeter initialName={this.props.userName} />;
+		return <Greeter initialName={this.state.userName} />;
 	}
 }
 
