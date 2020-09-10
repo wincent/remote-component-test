@@ -29,38 +29,38 @@ function Greeter({initialName}) {
 	);
 }
 
+class SimpleReactApp extends HTMLElement {
+	constructor() {
+		super();
+
+		this.container = document.createElement('div');
+
+		this.attachShadow({mode: 'open'}).appendChild(this.container);
+	}
+
+	connectedCallback() {
+		const name = this.getAttribute('name');
+
+		// name is showing up as null, triggering a warning
+		ReactDOM.render(<App userName={name} />, this.container);
+	}
+
+	disconnectedCallback() {
+		ReactDOM.unmountComponentAtNode(this.container);
+	}
+}
+
+if (customElements.get('simple-react-app')) {
+	console.log('Skipping registration for <simple-react-app> (already registered)');
+} else {
+	customElements.define('simple-react-app', SimpleReactApp);
+}
+
 const container = document.getElementById('simple-react-app-standalone-root');
 
 if (container) {
 	// We're probably being rendered at:
 	//
 	// http://remote-component-test.wincent.com/packages/simple-react-app/index.html
-	ReactDOM.render(<App />, container);
-} else {
-	// We're probably going to be rendered as a web component.
-	class SimpleReactApp extends HTMLElement {
-		constructor() {
-			super();
-
-			this.container = document.createElement('div');
-
-			this.attachShadow({mode: 'open'}).appendChild(this.container);
-		}
-
-		connectedCallback() {
-			const name = this.getAttribute('name');
-
-			ReactDOM.render(<App userName={name} />, this.container);
-		}
-
-		disconnectedCallback() {
-			ReactDOM.unmountComponentAtNode(this.container);
-		}
-	}
-
-	if (customElements.get('simple-react-app')) {
-		console.log('Skipping registration for <simple-react-app> (already registered)');
-	} else {
-		customElements.define('simple-react-app', SimpleReactApp);
-	}
+	container.appendChild(document.createElement('simple-react-app'));
 }

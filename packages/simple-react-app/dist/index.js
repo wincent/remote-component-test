@@ -28355,42 +28355,42 @@
 	  })), /*#__PURE__*/react.createElement("p", null, "Hello, ", name, "!"));
 	}
 
+	class SimpleReactApp extends HTMLElement {
+	  constructor() {
+	    super();
+	    this.container = document.createElement('div');
+	    this.attachShadow({
+	      mode: 'open'
+	    }).appendChild(this.container);
+	  }
+
+	  connectedCallback() {
+	    const name = this.getAttribute('name'); // name is showing up as null, triggering a warning
+
+	    reactDom.render( /*#__PURE__*/react.createElement(App, {
+	      userName: name
+	    }), this.container);
+	  }
+
+	  disconnectedCallback() {
+	    reactDom.unmountComponentAtNode(this.container);
+	  }
+
+	}
+
+	if (customElements.get('simple-react-app')) {
+	  console.log('Skipping registration for <simple-react-app> (already registered)');
+	} else {
+	  customElements.define('simple-react-app', SimpleReactApp);
+	}
+
 	const container = document.getElementById('simple-react-app-standalone-root');
 
 	if (container) {
 	  // We're probably being rendered at:
 	  //
 	  // http://remote-component-test.wincent.com/packages/simple-react-app/index.html
-	  reactDom.render( /*#__PURE__*/react.createElement(App, null), container);
-	} else {
-	  // We're probably going to be rendered as a web component.
-	  class SimpleReactApp extends HTMLElement {
-	    constructor() {
-	      super();
-	      this.container = document.createElement('div');
-	      this.attachShadow({
-	        mode: 'open'
-	      }).appendChild(this.container);
-	    }
-
-	    connectedCallback() {
-	      const name = this.getAttribute('name');
-	      reactDom.render( /*#__PURE__*/react.createElement(App, {
-	        userName: name
-	      }), this.container);
-	    }
-
-	    disconnectedCallback() {
-	      reactDom.unmountComponentAtNode(this.container);
-	    }
-
-	  }
-
-	  if (customElements.get('simple-react-app')) {
-	    console.log('Skipping registration for <simple-react-app> (already registered)');
-	  } else {
-	    customElements.define('simple-react-app', SimpleReactApp);
-	  }
+	  container.appendChild(document.createElement('simple-react-app'));
 	}
 
 }());
