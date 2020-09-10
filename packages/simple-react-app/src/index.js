@@ -11,7 +11,10 @@ class App extends React.Component {
 		//
 		// If you care about it, you have to do a manual fallback.
 		this.state = {
-			userName: props.userName == null ? App.defaultProps.userName : props.userName,
+			userName:
+				props.userName == null
+					? App.defaultProps.userName
+					: props.userName,
 		};
 	}
 
@@ -63,7 +66,9 @@ class SimpleReactApp extends HTMLElement {
 }
 
 if (customElements.get('simple-react-app')) {
-	console.log('Skipping registration for <simple-react-app> (already registered)');
+	console.log(
+		'Skipping registration for <simple-react-app> (already registered)'
+	);
 } else {
 	customElements.define('simple-react-app', SimpleReactApp);
 }
