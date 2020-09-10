@@ -29705,22 +29705,64 @@
 	}
 	});
 
+	/**
+	 * We're defining this locally here, but could also set it up as a well-known
+	 * global so that any web component could use it.
+	 */
+
+	function lookupCallback(descriptor) {
+	  let callback;
+
+	  if (typeof descriptor === 'string') {
+	    if (/^(?:\w+)(?:\.\w+)*$/.test(descriptor)) {
+	      callback = descriptor.split('.').reduce((acc, property) => {
+	        if (acc && property in acc) {
+	          return acc[property];
+	        }
+	      }, window);
+	    } else {
+	      console.warning(`Malformed descriptor: ${JSON.stringify(descriptor)}`);
+	    }
+	  }
+
+	  return typeof callback === 'function' ? callback : () => {};
+	}
+
 	class App extends react.Component {
 	  constructor(props) {
-	    super(props); // This illustrates a gotcha with web component attributes; if not
-	    // provided, `getAttribute` returns `null`, which prevents React's
-	    // defaultProps mechanism from working.
-	    //
-	    // If you care about it, you have to do a manual fallback.
-
+	    super(props);
 	    this.state = {
-	      userName: props.userName == null ? App.defaultProps.userName : props.userName
+	      // This illustrates a gotcha with web component attributes; if not
+	      // provided, `getAttribute` returns `null`, which prevents React's
+	      // defaultProps mechanism from working.
+	      //
+	      // If you care about it, you have to do a manual fallback.
+	      userName: props.userName ?? App.defaultProps.userName
 	    };
+	  }
+
+	  componentDidUpdate(_prevProps, prevState) {
+	    if (this.props.onChange && this.state.userName !== prevState.userName) {
+	      this.props.onChange({
+	        userName: this.state.userName
+	      });
+	    }
+	  }
+
+	  componentWillReceiveProps(nextProps) {
+	    if (nextProps.userName && nextProps.userName !== this.state.userName) {
+	      this.setState({
+	        userName: nextProps.userName
+	      });
+	    }
 	  }
 
 	  render() {
 	    return /*#__PURE__*/react.createElement(Greeter, {
-	      initialName: this.state.userName
+	      onNameChange: userName => this.setState({
+	        userName
+	      }),
+	      name: this.state.userName
 	    });
 	  }
 
@@ -29731,17 +29773,21 @@
 	};
 
 	function Greeter({
-	  initialName
+	  name,
+	  onNameChange
 	}) {
-	  const [name, setName] = react.useState(initialName);
 	  return /*#__PURE__*/react.createElement("div", null, /*#__PURE__*/react.createElement("label", null, /*#__PURE__*/react.createElement("span", null, "Name:"), /*#__PURE__*/react.createElement("input", {
-	    onChange: event => setName(event.target.value),
+	    onChange: event => onNameChange(event.target.value),
 	    type: "text",
 	    value: name
 	  })), /*#__PURE__*/react.createElement("p", null, "Hello, ", name, "!"));
 	}
 
 	class SimpleReactApp extends HTMLElement {
+	  static get observedAttributes() {
+	    return ['name'];
+	  }
+
 	  constructor() {
 	    super();
 	    this.container = document.createElement('div');
@@ -29750,9 +29796,21 @@
 	    }).appendChild(this.container);
 	  }
 
+	  attributeChangedCallback(attributeName, oldValue, newValue) {
+	    if (attributeName === 'name') {
+	      // Trigger a whole-app re-render, just to show that we can.
+	      //
+	      // As noted here, this is ok for small apps:
+	      // https://stackoverflow.com/a/35675972/2103996
+	      this.connectedCallback();
+	    }
+	  }
+
 	  connectedCallback() {
 	    const name = this.getAttribute('name');
+	    const onChange = this.onChange ?? lookupCallback(this.getAttribute('onChangeDescriptor'));
 	    reactDom.render( /*#__PURE__*/react.createElement(App, {
+	      onChange: onChange,
 	      userName: name
 	    }), this.container);
 	  }
@@ -29775,7 +29833,36 @@
 	  // We're probably being rendered at:
 	  //
 	  // http://remote-component-test.wincent.com/packages/simple-react-app/index.html
-	  container.appendChild(document.createElement('simple-react-app'));
+	  const component = document.createElement('simple-react-app');
+	  container.appendChild(component); // Demo how we can register a global callback to be notified of changes.
+
+	  window.__SimpleReactApp__ = {
+	    onChange({
+	      userName
+	    }) {
+	      console.log(`New name is ${userName} (via descriptor)`);
+	    }
+
+	  };
+	  component.setAttribute('onChangeDescriptor', '__SimpleReactApp__.onChange'); // Show that we can also pass function objects directly.
+	  // `attributeChangedCallback`):
+
+
+	  const FIRST_NAMES = ['Brian', 'Chema', 'Esther', 'Greg', 'Iván', 'Ray'];
+	  const INITIALS = Array.from('ABCDEFGHIJKLMNOPQRSTUVWXYZ');
+	  const LAST_NAMES = ['Einstein', 'Kaepernick', 'Houston', 'Napoleon', 'Fitzgerald', 'Franco'];
+	  const randomize = document.createElement('button');
+	  randomize.innerText = 'Randomize!';
+
+	  randomize.onclick = randomize.onsubmit = () => {
+	    component.setAttribute('name', `${pick(FIRST_NAMES)} ${pick(INITIALS)} ${pick(LAST_NAMES)}`);
+	  };
+
+	  container.appendChild(randomize);
+
+	  function pick(array) {
+	    return array[Math.floor(Math.random() * array.length)];
+	  }
 	}
 
 }());
