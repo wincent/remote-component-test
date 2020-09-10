@@ -15,8 +15,19 @@ class App extends React.Component {
 		};
 	}
 
+	componentWillReceiveProps(nextProps) {
+		if (nextProps.userName && nextProps.userName !== this.state.userName) {
+			this.setState({userName: nextProps.userName});
+		}
+	}
+
 	render() {
-		return <Greeter initialName={this.state.userName} />;
+		return (
+			<Greeter
+				onNameChange={(userName) => this.setState({userName})}
+				name={this.state.userName}
+			/>
+		);
 	}
 }
 
@@ -24,15 +35,13 @@ App.defaultProps = {
 	userName: 'Jane Tester',
 };
 
-function Greeter({initialName}) {
-	const [name, setName] = useState(initialName);
-
+function Greeter({name, onNameChange}) {
 	return (
 		<div>
 			<label>
 				<span>Name:</span>
 				<input
-					onChange={(event) => setName(event.target.value)}
+					onChange={(event) => onNameChange(event.target.value)}
 					type="text"
 					value={name}
 				/>
@@ -43,12 +52,24 @@ function Greeter({initialName}) {
 }
 
 class SimpleReactApp extends HTMLElement {
+	static get observedAttributes() { return ['name']; }
+
 	constructor() {
 		super();
 
 		this.container = document.createElement('div');
 
 		this.attachShadow({mode: 'open'}).appendChild(this.container);
+	}
+
+	attributeChangedCallback(attributeName, oldValue, newValue) {
+		if (attributeName === 'name') {
+			// Trigger a whole-app re-render, just to show that we can.
+			//
+			// As noted here, this is ok for small apps:
+			// https://stackoverflow.com/a/35675972/2103996
+			this.connectedCallback();
+		}
 	}
 
 	connectedCallback() {
@@ -76,5 +97,48 @@ if (container) {
 	// We're probably being rendered at:
 	//
 	// http://remote-component-test.wincent.com/packages/simple-react-app/index.html
-	container.appendChild(document.createElement('simple-react-app'));
+
+	const component = document.createElement('simple-react-app');
+
+	container.appendChild(component);
+
+	// Make a silly button for our attribute-change demo (see
+	// `attributeChangedCallback`):
+
+	const FIRST_NAMES = [
+		'Brian',
+		'Chema',
+		'Esther',
+		'Greg',
+		'Iván',
+		'Ray',
+	];
+
+	const INITIALS = Array.from('ABCDEFGHIJKLMNOPQRSTUVWXYZ');
+
+	const LAST_NAMES = [
+		'Einstein',
+		'Kaepernick',
+		'Houston',
+		'Napoleon',
+		'Fitzgerald',
+		'Franco',
+	];
+
+	const randomize = document.createElement('button');
+
+	randomize.innerText = 'Randomize!';
+
+	randomize.onclick = randomize.onsubmit = () => {
+		component.setAttribute(
+			'name',
+			`${pick(FIRST_NAMES)} ${pick(INITIALS)} ${pick(LAST_NAMES)}`
+		);
+	};
+
+	container.appendChild(randomize);
+
+	function pick(array) {
+		return array[Math.floor(Math.random() * array.length)];
+	}
 }
