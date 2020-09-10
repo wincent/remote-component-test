@@ -9,8 +9,8 @@
 		"build:nocommit": "rollup -c"
 	},
 	"dependencies": {
-		"react": "16.13.1",
-		"react-dom": "16.13.1"
+		"react": "17.0.0-rc.1",
+		"react-dom": "17.0.0-rc.1"
 	},
 	"devDependencies": {
 		"@babel/cli": "7.11.6",
