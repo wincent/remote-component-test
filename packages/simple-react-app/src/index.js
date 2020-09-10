@@ -107,7 +107,7 @@ class SimpleReactApp extends HTMLElement {
 	connectedCallback() {
 		const name = this.getAttribute('name');
 
-		const onChange = lookupCallback(
+		const onChange = this.onChange ?? lookupCallback(
 			this.getAttribute('onChangeDescriptor')
 		);
 
@@ -145,11 +145,20 @@ if (container) {
 
 	window.__SimpleReactApp__ = {
 		onChange({userName}) {
-			console.log(`New name is ${userName}`);
+			console.log(`New name is ${userName} (via descriptor)`);
 		},
 	};
 
 	component.setAttribute('onChangeDescriptor', '__SimpleReactApp__.onChange');
+
+	// Show that we can also pass function objects directly.
+	// (Remove or invert the `if (false)` conditional to see this in action.)
+
+	if (false) {
+		component.onChange = ({userName}) => {
+			console.log(`New name is ${userName} (via property)`);
+		};
+	}
 
 	// Make a silly button for our attribute-change demo (see
 	// `attributeChangedCallback`):
