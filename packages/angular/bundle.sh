@@ -7,9 +7,13 @@ DIST=$(git rev-parse --show-toplevel)/packages/angular/dist
 yarn run build --source-map=false
 
 cat "$DIST/SampleWebComponent/polyfills.js" \
+	<(echo) \
 	"$DIST/SampleWebComponent/vendor.js" \
+	<(echo) \
 	"$DIST/SampleWebComponent/runtime.js" \
+	<(echo) \
 	"$DIST/SampleWebComponent/styles.js" \
+	<(echo) \
 	"$DIST/SampleWebComponent/main.js" > "$DIST/SampleWebComponent/bundle.js"
 
 while (($#)); do
