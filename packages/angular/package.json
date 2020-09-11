@@ -7,7 +7,9 @@
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "bundle": "bash bundle.sh",
+    "bundle:nocommit": "bash bundle.sh --nocommit"
   },
   "private": true,
   "dependencies": {
