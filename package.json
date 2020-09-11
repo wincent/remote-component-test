@@ -5,8 +5,8 @@
 	"main": "index.js",
 	"scripts": {
 		"build": "yarn workspaces run build",
-		"format": "npx prettier --write \"**/*.{css,html,js,json,md}\"",
-		"test": "npx prettier --check \"**/*.{css,html,js,json,md}\""
+		"format": "npx prettier --write \"**/*.{css,html,js,json,md,ts}\"",
+		"test": "npx prettier --check \"**/*.{css,html,js,json,md,ts}\""
 	},
 	"repository": {
 		"type": "git",

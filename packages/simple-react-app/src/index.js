@@ -107,9 +107,9 @@ class SimpleReactApp extends HTMLElement {
 	connectedCallback() {
 		const name = this.getAttribute('name');
 
-		const onChange = this.onChange ?? lookupCallback(
-			this.getAttribute('onChangeDescriptor')
-		);
+		const onChange =
+			this.onChange ??
+			lookupCallback(this.getAttribute('onChangeDescriptor'));
 
 		ReactDOM.render(
 			<App onChange={onChange} userName={name} />,
