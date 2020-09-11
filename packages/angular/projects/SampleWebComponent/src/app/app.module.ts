@@ -1,5 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { DoBootstrap, Injector, NgModule } from '@angular/core';
+import { createCustomElement } from '@angular/elements';
 
 import { AppComponent } from './app.component';
 import { SomeAngularButtonComponent } from './some-angular-button/some-angular-button.component';
@@ -13,6 +14,15 @@ import { SomeAngularButtonComponent } from './some-angular-button/some-angular-b
     BrowserModule
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  entryComponents: [SomeAngularButtonComponent],
 })
-export class AppModule { }
+export class AppModule {
+  constructor(private injector: Injector) {
+    const webComponent = createCustomElement(SomeAngularButtonComponent, {injector});
+    customElements.define('some-angular-button', webComponent);
+  }
+
+  ngDoBootstrap() {
+  }
+}
