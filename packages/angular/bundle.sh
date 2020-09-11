@@ -10,8 +10,7 @@ cat "$DIST/SampleWebComponent/polyfills.js" \
 	"$DIST/SampleWebComponent/vendor.js" \
 	"$DIST/SampleWebComponent/runtime.js" \
 	"$DIST/SampleWebComponent/styles.js" \
-	"$DIST/SampleWebComponent/main.js" | \
-	sed '\;^//# sourceMappingURL;d' > "$DIST/SampleWebComponent/bundle.js"
+	"$DIST/SampleWebComponent/main.js" > "$DIST/SampleWebComponent/bundle.js"
 
 while (($#)); do
   if [ "$1" = "--nocommit" ]; then
