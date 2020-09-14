@@ -26,7 +26,7 @@
 	}
 
 	window.Liferay = {
-		Store: {
+		State: {
 			get() {
 				return {
 					store: {
