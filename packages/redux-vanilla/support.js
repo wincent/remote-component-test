@@ -6,33 +6,38 @@
 	 * that we have over in DXP.
 	 */
 
+	let reducer = (state, action) => state;
+
 	let subscriber;
-	let text = 'Lorem ipsum';
 
-	const WORDS = `
-		Lorem ipsum dolor sit amet consectetur adipiscing elit sed do
-		eiusmod tempor incididunt ut labore et dolore magna aliqua Ut
-		enim ad minim veniam quis nostrud exercitation ullamco laboris
-		nisi ut aliquip ex ea commodo consequat Duis aute irure dolor in
-		reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-		pariatur Excepteur sint occaecat cupidatat non proident sunt in
-		culpa qui officia deserunt mollit anim id est laborum
-	`
-		.trim()
-		.split(/\s+/);
-
-	function getRandomWord() {
-		return WORDS[Math.floor(Math.random() * WORDS.length)];
-	}
+	let state = {
+		text: '',
+	};
 
 	window.Liferay = {
 		State: {
+			Util: {
+				reduceReducers(reducers) {
+					return function (state, action) {
+						return reducers.reduce(
+							(currentState, reducer, DELETE_ME) => {
+								return reducer(currentState, action);
+							},
+							state
+						);
+					};
+				},
+			},
+
 			get() {
 				return {
+					get reducer() {
+						return reducer;
+					},
+
 					store: {
 						dispatch(action) {
-							// Not even pretending to call a real reducer...
-							text = `${text} ${getRandomWord()}`;
+							state = reducer(state, action);
 
 							if (subscriber) {
 								subscriber();
@@ -40,7 +45,11 @@
 						},
 
 						getState() {
-							return {text};
+							return state;
+						},
+
+						replaceReducer(newReducer) {
+							reducer = newReducer;
 						},
 
 						subscribe(newSubscriber) {
