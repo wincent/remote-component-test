@@ -132,20 +132,7 @@ if (customElements.get('simple-react-app')) {
 
 const container = document.getElementById('simple-react-app-standalone-root');
 
-// Not really relevant to the initial proof-of-concept in DXP, but you can set
-// this to `true` in the standalone demo to show bidirectional flow between the
-// React web app inside the web component and the outside world.
-//
-// This adds a button that shows that you can:
-//
-// - `setAttribute` on the web component and have that data show up in the React
-//   app; and:
-// - `setAttribute` on the web component to register a callback, which the React
-//   app can the use to communicate information back to the outside world.
-
-const demoBidirectionalDataFlow = false;
-
-if (container && demoBidirectionalDataFlow) {
+if (container) {
 	// We're probably being rendered at:
 	//
 	// http://remote-component-test.wincent.com/packages/simple-react-app/index.html
@@ -154,55 +141,67 @@ if (container && demoBidirectionalDataFlow) {
 
 	container.appendChild(component);
 
-	// Demo how we can register a global callback to be notified of changes.
+	// Not really relevant to the initial proof-of-concept in DXP, but you can set
+	// this to `true` in the standalone demo to show bidirectional flow between the
+	// React web app inside the web component and the outside world.
+	//
+	// This adds a button that shows that you can:
+	//
+	// - `setAttribute` on the web component and have that data show up in the React
+	//   app; and:
+	// - `setAttribute` on the web component to register a callback, which the React
+	//   app can the use to communicate information back to the outside world.
+	if (demoBidirectionalDataFlow) {
+		// Demo how we can register a global callback to be notified of changes.
 
-	window.__SimpleReactApp__ = {
-		onChange({userName}) {
-			console.log(`New name is ${userName} (via descriptor)`);
-		},
-	};
-
-	component.setAttribute('onChangeDescriptor', '__SimpleReactApp__.onChange');
-
-	// Show that we can also pass function objects directly.
-	// (Remove or invert the `if (false)` conditional to see this in action.)
-
-	if (false) {
-		component.onChange = ({userName}) => {
-			console.log(`New name is ${userName} (via property)`);
+		window.__SimpleReactApp__ = {
+			onChange({userName}) {
+				console.log(`New name is ${userName} (via descriptor)`);
+			},
 		};
-	}
 
-	// Make a silly button for our attribute-change demo (see
-	// `attributeChangedCallback`):
+		component.setAttribute('onChangeDescriptor', '__SimpleReactApp__.onChange');
 
-	const FIRST_NAMES = ['Brian', 'Chema', 'Esther', 'Greg', 'Iván', 'Ray'];
+		// Show that we can also pass function objects directly.
+		// (Remove or invert the `if (false)` conditional to see this in action.)
 
-	const INITIALS = Array.from('ABCDEFGHIJKLMNOPQRSTUVWXYZ');
+		if (false) {
+			component.onChange = ({userName}) => {
+				console.log(`New name is ${userName} (via property)`);
+			};
+		}
 
-	const LAST_NAMES = [
-		'Einstein',
-		'Kaepernick',
-		'Houston',
-		'Napoleon',
-		'Fitzgerald',
-		'Franco',
-	];
+		// Make a silly button for our attribute-change demo (see
+		// `attributeChangedCallback`):
 
-	const randomize = document.createElement('button');
+		const FIRST_NAMES = ['Brian', 'Chema', 'Esther', 'Greg', 'Iván', 'Ray'];
 
-	randomize.innerText = 'Randomize!';
+		const INITIALS = Array.from('ABCDEFGHIJKLMNOPQRSTUVWXYZ');
 
-	randomize.onclick = randomize.onsubmit = () => {
-		component.setAttribute(
-			'name',
-			`${pick(FIRST_NAMES)} ${pick(INITIALS)} ${pick(LAST_NAMES)}`
-		);
-	};
+		const LAST_NAMES = [
+			'Einstein',
+			'Kaepernick',
+			'Houston',
+			'Napoleon',
+			'Fitzgerald',
+			'Franco',
+		];
 
-	container.appendChild(randomize);
+		const randomize = document.createElement('button');
 
-	function pick(array) {
-		return array[Math.floor(Math.random() * array.length)];
+		randomize.innerText = 'Randomize!';
+
+		randomize.onclick = randomize.onsubmit = () => {
+			component.setAttribute(
+				'name',
+				`${pick(FIRST_NAMES)} ${pick(INITIALS)} ${pick(LAST_NAMES)}`
+			);
+		};
+
+		container.appendChild(randomize);
+
+		function pick(array) {
+			return array[Math.floor(Math.random() * array.length)];
+		}
 	}
 }
