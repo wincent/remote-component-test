@@ -132,7 +132,20 @@ if (customElements.get('simple-react-app')) {
 
 const container = document.getElementById('simple-react-app-standalone-root');
 
-if (container) {
+// Not really relevant to the initial proof-of-concept in DXP, but you can set
+// this to `true` in the standalone demo to show bidirectional flow between the
+// React web app inside the web component and the outside world.
+//
+// This adds a button that shows that you can:
+//
+// - `setAttribute` on the web component and have that data show up in the React
+//   app; and:
+// - `setAttribute` on the web component to register a callback, which the React
+//   app can the use to communicate information back to the outside world.
+
+const demoBidirectionalDataFlow = false;
+
+if (container && demoBidirectionalDataFlow) {
 	// We're probably being rendered at:
 	//
 	// http://remote-component-test.wincent.com/packages/simple-react-app/index.html
