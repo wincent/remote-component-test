@@ -17,6 +17,11 @@ header {
 	border-bottom: 1px solid #ccc;
 }
 
+li {
+	line-height: 1.5;
+	margin-bottom: 1em;
+}
+
 #content {
 	flex: 1;
 	padding: 16px;
