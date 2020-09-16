@@ -4,7 +4,7 @@ set -e
 
 DIST=$(git rev-parse --show-toplevel)/packages/angular/dist
 
-yarn run build --source-map=false
+yarn run ng build --source-map=false
 
 cat "$DIST/SampleWebComponent/polyfills.js" \
 	<(echo) \

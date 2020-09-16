@@ -5,6 +5,7 @@
 	"main": "index.js",
 	"scripts": {
 		"build": "yarn workspaces run build",
+		"build:nocommit": "yarn workspaces run build:nocommit",
 		"format": "npx prettier --write \"**/*.{css,html,js,json,md,ts}\"",
 		"test": "npx prettier --check \"**/*.{css,html,js,json,md,ts}\""
 	},
