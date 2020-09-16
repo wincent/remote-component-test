@@ -2977,6 +2977,9 @@
 
 	        throw error;
 	      }
+	    } else {
+	      // No catch in prod code path.
+	      return workLoop(hasTimeRemaining, initialTime);
 	    }
 	  } finally {
 	    currentTask = null;
@@ -14709,6 +14712,8 @@
 
 	      if (enableProfilerTimer) {
 	        injectedHook.onCommitFiberRoot(rendererID, root, priorityLevel, didError);
+	      } else {
+	        injectedHook.onCommitFiberRoot(rendererID, root, undefined, didError);
 	      }
 	    } catch (err) {
 	      {
@@ -23639,6 +23644,11 @@
 	      // displayed by the browser thanks to the DEV-only fake event trick in ReactErrorUtils.
 
 	      console['error'](combinedMessage); // Don't transform to our wrapper
+	    } else {
+	      // In production, we print the error directly.
+	      // This will include the message, the JS stack, and anything the browser wants to show.
+	      // We pass the error object instead of custom message so that the browser displays the error natively.
+	      console['error'](error); // Don't transform to our wrapper
 	    }
 	  } catch (e) {
 	    // This method must not throw, or React internal state will get messed up.
